@@ -17,6 +17,27 @@ def show():
     # Titre de la page
     st.title("Challenge SISE x OPSIE")
 
+    # Description de l'application
+    st.write("Le projet SISE x OPSIE est un challenge académique visant à analyser et visualiser les logs d’un firewall Iptables dans un environnement cloud et on-premise. L’objectif est de fournir un tableau de bord interactif permettant d’explorer les flux réseaux, d’identifier des tendances et d’évaluer la sécurité du système d’information. Ce projet intègre également une composante Machine Learning pour la détection d’anomalies et d’intrusions à partir des journaux de connexion.")
+
+    # Fonctionnalités de l'application
+    cols = st.columns(3)
+
+    with cols[0]:
+        with st.container(border=True):
+            st.write("**:material/search_insights: Analyse descriptive**")
+            st.write("*Texte descriptif disponible ultérieurement*")
+
+    with cols[1]:
+        with st.container(border=True):
+            st.write("**:material/dashboard: Visualisation interactive**")
+            st.write("*Texte descriptif disponible ultérieurement*")
+
+    with cols[2]:
+        with st.container(border=True):
+            st.write("**:material/policy_alert: Détection d'anomalies**")
+            st.write("*Texte descriptif disponible ultérieurement*")
+
     # Crédits de l'application
     st.write(
         "*L'application est Open Source et disponible sur "
