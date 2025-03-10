@@ -19,7 +19,7 @@ def show():
     st.title(":material/table: Données")
 
     # Récupération des données
-    data = st.session_state.data
+    data = st.session_state["data"]
 
     # Paramètres de pagination
     if "page" not in st.session_state:
