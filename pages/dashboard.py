@@ -43,6 +43,15 @@ def show():
     cols = st.columns(2)
 
     with cols[0]:
+        # Top 5 des IP émettrices
+        with st.container(border=True):
+            top_ips = get_counts(data_filtre, 'ipsrc', filter_key)\
+                .sort_values(by='count', ascending=False)\
+                .head(5).reset_index()
+            st.write("**Top 5 des IP émettrices :**")
+            for i, row in top_ips.iterrows():
+                st.write(f"**{i+1}.** `{row['ipsrc']}` : {row["count"]} connexions")
+
         # Répartition des connexions
         with st.container(border=True):
             action_counts = get_counts(data_filtre, 'action', filter_key)
@@ -74,6 +83,17 @@ def show():
             st.plotly_chart(fig_rule, use_container_width=True)
 
     with cols[1]:
+        # Top 10 des ports inférieurs à 1024 les plus autorisés
+        with st.container(border=True):
+            st.write("**Top 10 des ports (< 1024) les plus autorisés :**")
+            top_ports_df = data_filtre[(data_filtre['portdst'] < 1024) & (data_filtre['action'] == 'PERMIT')]
+            # On fait une copie pour forcer le recalcul et contourner le cache
+            top_ports = get_counts(top_ports_df.copy(), 'portdst', filter_key)
+            top_ports.columns = ['portdst', 'count']
+            top_ports = top_ports.sort_values(by='count', ascending=False).head(10).reset_index(drop=True)
+            for i, row in top_ports.iterrows():
+                st.write(f"**{i+1}.** Port `{row['portdst']}` : {row['count']} connexions")
+
         # Répartition des protocoles
         with st.container(border=True):
             protocol_counts = get_counts(data_filtre, 'proto', filter_key)
@@ -88,12 +108,6 @@ def show():
             fig_protocol.update_traces(textinfo='percent+value')
             st.plotly_chart(fig_protocol, use_container_width=True)
 
-    # # Tableau interactif des données (renderDataTable) avec filtrage dynamique
-    # st.subheader("Tableau interactif des logs")
-    # ip_filter = st.text_input("Filtrer par IP")
-    # protocol_filter = st.selectbox("Filtrer par protocole", options=["", "TCP", "UDP"])
-    # action_filter = st.selectbox("Filtrer par action", options=["", "accept", "refuse"])
-
     # data_table = data_filtre.copy()
     # if ip_filter:
     #     data_table = data_table[data_table['ip'].str.contains(ip_filter)]
@@ -103,20 +117,6 @@ def show():
     #     data_table = data_table[data_table['action'] == action_filter]
 
     # st.dataframe(data_table)
-
-    # # Statistiques principales
-    # st.subheader("Statistiques principales")
-
-    # # Top 5 des IP les plus émettrices
-    # top_ips = data_filtre['ip'].value_counts().head(5)
-    # st.write("**Top 5 des IP émettrices :**")
-    # st.table(top_ips.reset_index().rename(columns={'index': 'IP', 'ip': 'Nombre de connexions'}))
-
-    # # Top 10 des ports inférieurs à 1024 les plus autorisés
-    # ports_autorises = data_filtre[(data_filtre['port'] < 1024) & (data_filtre['action'] == 'accept')]
-    # top_ports = ports_autorises['port'].value_counts().head(10)
-    # st.write("**Top 10 des ports (<1024) les plus autorisés :**")
-    # st.table(top_ports.reset_index().rename(columns={'index': 'Port', 'port': 'Nombre d\'acceptations'}))
 
     # # Adresses hors du plan d’adressage universitaire
     # # Ici on considère que le plan d'adressage universitaire commence par "192.168"
