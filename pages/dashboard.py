@@ -65,7 +65,9 @@ def show():
                 names='action',
                 values='count',
                 title="Répartition des connexions",
-                hole=0.5
+                hole=0.5,
+                color='action',
+                color_discrete_map={'PERMIT': 'green', 'DENY': 'red'}
             )
             fig_action.update_traces(textinfo='percent+value')
             st.plotly_chart(fig_action, use_container_width=True)

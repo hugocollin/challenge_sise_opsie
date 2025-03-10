@@ -10,9 +10,10 @@ def load_parquet():
     Charge le fichier parquet.
 
     Returns:
-        DataFrame: Le fichier parquet
+        DataFrame: Le fichier parquet nettoyé
     """
     data = dd.read_parquet("docs/log_export.parquet")
+    data = data.drop(columns=["interface_in", "Interface_out", "divers"])
 
     return data
 
