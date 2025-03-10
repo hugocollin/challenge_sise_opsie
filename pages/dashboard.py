@@ -8,8 +8,8 @@ import plotly.express as px
 from src.app.ui_components import show_navbar
 
 
-@st.cache_data(show_spinner=False)
-def get_counts(_data_filtre, column_name):
+@st.cache_data(show_spinner=False, hash_funcs={type(st.session_state.data): lambda d: None})
+def get_counts(_data_filtre, column_name, filter_key):
     """
     Calcule et met en cache les comptes de valeurs pour une colonne donnée.
     """
@@ -37,28 +37,14 @@ def show():
             value=(1, 65535)
         )
         data_filtre = data[(data['portdst'] >= port_min) & (data['portdst'] <= port_max)]
+        filter_key = f"{port_min}_{port_max}"
 
     cols = st.columns(2)
 
     with cols[0]:
-        # Flux TCP et UDP en camembert
+        # Répartition des connexions
         with st.container(border=True):
-            protocol_counts = get_counts(data_filtre, 'proto')
-            protocol_counts.columns = ['proto', 'count']
-            fig_protocol = px.pie(
-                protocol_counts,
-                names='proto',
-                values='count',
-                title="Répartition des flux",
-                hole=0.5
-            )
-            fig_protocol.update_traces(textinfo='percent+value')
-            st.plotly_chart(fig_protocol, use_container_width=True)
-
-    with cols[1]:
-        # Connexions acceptées et refusées en camembert
-        with st.container(border=True):
-            action_counts = get_counts(data_filtre, 'action')
+            action_counts = get_counts(data_filtre, 'action', filter_key)
             action_counts.columns = ['action', 'count']
             fig_action = px.pie(
                 action_counts,
@@ -71,6 +57,35 @@ def show():
             )
             fig_action.update_traces(textinfo='percent+value')
             st.plotly_chart(fig_action, use_container_width=True)
+
+        # Répartition des règles
+        with st.container(border=True):
+            rule_counts = get_counts(data_filtre, 'regle', filter_key)
+            rule_counts.columns = ['regle', 'count']
+            fig_rule = px.pie(
+                rule_counts,
+                names='regle',
+                values='count',
+                title="Répartition des règles",
+                hole=0.5
+            )
+            fig_rule.update_traces(textinfo='percent+value')
+            st.plotly_chart(fig_rule, use_container_width=True)
+
+    with cols[1]:
+        # Répartition des protocoles
+        with st.container(border=True):
+            protocol_counts = get_counts(data_filtre, 'proto', filter_key)
+            protocol_counts.columns = ['proto', 'count']
+            fig_protocol = px.pie(
+                protocol_counts,
+                names='proto',
+                values='count',
+                title="Répartition des protocoles",
+                hole=0.5
+            )
+            fig_protocol.update_traces(textinfo='percent+value')
+            st.plotly_chart(fig_protocol, use_container_width=True)
 
     # # Tableau interactif des données (renderDataTable) avec filtrage dynamique
     # st.subheader("Tableau interactif des logs")
