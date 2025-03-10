@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      STREAMLIT_SERVER_HEADLESS: "true"
+      STREAMLIT_SERVER_PORT: "8501"
+      STREAMLIT_SERVER_ENABLECORS: "false"
+      LANG: "fr_FR.UTF-8"
+      LANGUAGE: "fr_FR:fr"
+      LC_ALL: "fr_FR.UTF-8"
+    volumes:
+      - .:/app
+    restart: unless-stopped
+  db:
+    image: mariadb:10.6.4
+    container_name: ma-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: mypass123
+    hostname: infra_chall_bd
+    ports:
+      - "3306:3306"
+    networks:
+      - infra_chall
+networks:
+  infra_chall:
+    driver: bridge
