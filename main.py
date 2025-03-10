@@ -5,7 +5,7 @@ Fichier principal de l'application.
 import streamlit as st
 
 # Configuration de la page
-st.set_page_config(page_title="Pokemon TCGP Companion", page_icon="ressources/favicon.svg")
+st.set_page_config(page_title="Pokemon TCGP Companion", page_icon=":material/polymer:")
 
 # Récupération de la page à afficher
 page = st.query_params.page if "page" in st.query_params else "home"
