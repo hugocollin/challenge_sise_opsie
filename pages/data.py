@@ -1,0 +1,53 @@
+"""
+Fichier contenant la page "Données" de l'application.
+"""
+
+import math
+import streamlit as st
+
+from src.app.ui_components import show_navbar
+
+
+def show():
+    """
+    Affiche la page "Données".
+    """
+    # Barre de navigation
+    show_navbar()
+
+    # Titre de la page
+    st.title(":material/table: Données")
+
+    # Récupération des données
+    data = st.session_state.data
+
+    # Paramètres de pagination
+    if "page" not in st.session_state:
+        st.session_state.page = 1
+    page_size = 100
+    total_rows = int(data.shape[0].compute())
+    total_pages = math.ceil(total_rows / page_size)
+
+    # Calcul de l'intervalle à afficher
+    start_idx = (st.session_state.page - 1) * page_size
+    end_idx = start_idx + page_size
+
+    # Chargement uniquement des données de la page actuelle
+    df_page = data.loc[start_idx:end_idx-1].compute()
+    st.dataframe(df_page)
+
+    cols = st.columns([3, 7, 10])
+
+    # Sélecteur de page
+    with cols[0]:
+        st.number_input(
+            "Sélectionnez la page",
+            min_value=1,
+            max_value=total_pages,
+            step=1,
+            key="page"
+        )
+
+    # Informations sur la pagination
+    with cols[1]:
+        st.write(f"Affichage des lignes {start_idx} à {min(end_idx, total_rows)} sur {total_rows}")

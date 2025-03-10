@@ -1,5 +1,0 @@
-mysql-connector-python
-load_dotenv
-
-
-

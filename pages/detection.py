@@ -15,4 +15,4 @@ def show():
     show_navbar()
 
     # Titre de la page
-    st.title("Détection d'anomalies")
+    st.title(":material/policy_alert: Détection d'anomalies")

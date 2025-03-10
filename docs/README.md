@@ -15,9 +15,9 @@ Le projet SISE x OPSIE est un challenge académique visant à analyser et visual
 
 ### Fonctionnalités principales
 
-- Analyse descriptive :
+- Données :
 
-- Visualisation interactive : 
+- Tableau de bord : 
 
 - Détection d'anomalies : 
 

@@ -27,12 +27,12 @@ def show_navbar():
             navigate_to("home")
 
         # Bouton "Analyse descriptive"
-        if st.button(label="Analyse descriptive", icon=":material/search_insights:", use_container_width=True):
-            navigate_to("analyze")
+        if st.button(label="Données", icon=":material/table:", use_container_width=True):
+            navigate_to("data")
 
         # Bouton "Visualisation interactive"
-        if st.button(label="Visualisation interactive", icon=":material/dashboard:", use_container_width=True):
-            navigate_to("visualization")
+        if st.button(label="Tableau de bord", icon=":material/dashboard:", use_container_width=True):
+            navigate_to("dashboard")
 
         # Bouton "Détection d'anomalies"
         if st.button(label="Détection d'anomalies", icon=":material/policy_alert:", use_container_width=True):
