@@ -27,7 +27,7 @@ def show_navbar():
             navigate_to("home")
 
         # Bouton "Analyse descriptive"
-        if st.button(label="Analyse descriptive", icon=":material/query_stats:", use_container_width=True):
+        if st.button(label="Analyse descriptive", icon=":material/search_insights:", use_container_width=True):
             navigate_to("analyze")
 
         # Bouton "Visualisation interactive"
