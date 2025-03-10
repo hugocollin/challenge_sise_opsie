@@ -2,10 +2,10 @@ import mysql.connector
 
 # Configuration de la connexion
 config = {
-    "host": "localhost",  # Nom du conteneur MariaDB
+    "host": "localhost",  
     "user": "root",
     "password": "mypass123",
-    "database": "mysql",  # Remplace par le nom de ta base de données si nécessaire
+    "database": "mysql",  
 }
 
 try:
