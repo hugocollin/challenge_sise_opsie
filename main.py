@@ -29,9 +29,7 @@ page_module = __import__(module_name, fromlist=["show"])
 
 # Chargement des données
 if "data" not in st.session_state:
-    st.toast("Chargement des données en cours...", icon=":material/sync:")
     st.session_state.data = load_parquet()
-    st.toast("Données chargées avec succès !", icon=":material/check_circle:")
 
 # Affichage de la page
 page_module.show()

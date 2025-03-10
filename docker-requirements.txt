@@ -2,3 +2,4 @@ streamlit
 plotly
 python-dotenv
 mysql-connector-python
+dask
