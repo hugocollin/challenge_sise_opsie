@@ -3,12 +3,13 @@ Fichier contenant la page "Tableau de bord" de l'application.
 """
 
 import streamlit as st
+import dask.dataframe as dd
 import plotly.express as px
 
 from src.app.ui_components import show_navbar
 
 
-@st.cache_data(show_spinner=False, hash_funcs={type(st.session_state.data): lambda d: None})
+@st.cache_data(show_spinner=False, hash_funcs={dd.DataFrame: lambda d: None})
 def get_counts(_data_filtre, column_name, filter_key):
     """
     Calcule et met en cache les comptes de valeurs pour une colonne donnée.
