@@ -25,12 +25,12 @@ def show():
 
     with cols[0]:
         with st.container(border=True):
-            st.write("**:material/search_insights: Analyse descriptive**")
+            st.write("**:material/table: Données**")
             st.write("*Texte descriptif disponible ultérieurement*")
 
     with cols[1]:
         with st.container(border=True):
-            st.write("**:material/dashboard: Visualisation interactive**")
+            st.write("**:material/dashboard: Tableau de bord**")
             st.write("*Texte descriptif disponible ultérieurement*")
 
     with cols[2]:
