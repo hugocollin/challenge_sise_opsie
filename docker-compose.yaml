@@ -17,14 +17,74 @@ services:
     restart: unless-stopped
   db:
     image: mariadb:10.6.4
-    container_name: ma-mariadb
+    container_name: cont_db_infra_chall
     environment:
       MARIADB_ROOT_PASSWORD: mypass123
     hostname: infra_chall_bd
     ports:
       - "3306:3306"
     networks:
+      infra_chall:
+        ipv4_address: 172.43.0.12
+    volumes:
+      - ./mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mariadb/scan_res.sql:/docker-entrypoint-initdb.d/scan_data.sql
+    privileged: true
+    healthcheck:
+      test: mysqladmin ping -h localhost -u root --password=mypass123 
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: cont_php_infra_chall
+    hostname: infra_chall_php
+    ports: 
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+    networks: 
       - infra_chall
+
+  syslog:
+    build:
+      context: syslog-ng/
+      dockerfile: Dockerfile
+    container_name: cont_syslog_infra_chall
+    hostname: infra_chall_syslog
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: 
+      infra_chall:
+        ipv4_address: 172.43.0.7
+    privileged: true
+
+  iptables:
+    build:
+      context: iptables/
+      dockerfile: Dockerfile
+    container_name: cont_ipt_infra_chall
+    hostname: infra-chall-ipt
+    depends_on:
+      - syslog
+    networks:
+      - infra_chall
+    privileged: true
+
+  admin:
+    image: ubuntu:22.04
+    container_name: cont_admin_infra_chall
+    hostname: infra_chall_admin
+    networks: 
+      infra_chall:
+        ipv4_address: 172.43.0.30
+    privileged: true
+
 networks:
   infra_chall:
-    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.43.0.0/24
+          gateway: 172.43.0.1
