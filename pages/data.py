@@ -35,7 +35,7 @@ def show():
 
     # Chargement uniquement des données de la page actuelle
     df_page = data.slice(start_idx, page_size).to_pandas()
-    st.dataframe(df_page)
+    st.dataframe(df_page, hide_index=True)
 
     cols = st.columns([3, 7, 10])
 
