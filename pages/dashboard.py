@@ -8,7 +8,7 @@ import plotly.express as px
 
 from src.app.ui_components import show_navbar
 
-@st.cache_data(show_spinner=False)
+# @st.cache_data(show_spinner=False)
 def compute_counts(port_min: int, port_max: int, column_name: str, 
                    action_filter: bool = False):
     """
