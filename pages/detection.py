@@ -144,4 +144,14 @@ def show():
         )
         st.plotly_chart(fig_hist, use_container_width=True)
 
+        # pic de traffic par heure
+        st.subheader("Pic de traffic par heure")
+        data = st.session_state["data"]
+        data = pl.DataFrame(data)
+        data = data.with_column("hour", pl.col("timestamp").str_parse_date("%Y-%m-%d %H:%M:%S").dt.hour())
+        data = data.group_by("hour").len().rename({"len": "count"})
+        fig_hour = px.line(data.to_pandas(), x="hour", y="count", title="Pic de traffic par heure")
+        st.plotly_chart(fig_hour, use_container_width=True)
+
+
 
