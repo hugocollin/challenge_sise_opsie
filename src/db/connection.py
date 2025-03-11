@@ -2,19 +2,19 @@
 # import mysql.connector
 # from dotenv import load_dotenv
 import streamlit as st
-import dask.dataframe as dd
+import polars as pl
 
 @st.cache_data(show_spinner=False)
 def load_parquet():
     """
-    Charge le fichier parquet.
+    Charge le fichier parquet avec Polars.
 
     Returns:
-        DataFrame: Le fichier parquet nettoyé
+        DataFrame: Le fichier parquet nettoyé sous forme de DataFrame Polars
     """
-    data = dd.read_parquet("docs/log_export.parquet")
-    data = data.drop(columns=["interface_in", "Interface_out", "divers"])
-
+    data = pl.read_parquet("docs/log_export.parquet")
+    data = data.drop(["interface_in", "Interface_out", "divers"])
+    
     return data
 
 # # Charger les variables d'environnement du fichier .env

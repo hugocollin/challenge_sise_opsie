@@ -35,10 +35,7 @@ page_module = __import__(module_name, fromlist=["show"])
 
 # Chargement des données
 if "data" not in st.session_state:
-    if PLATFORM == "local":
-        data = load_parquet().persist()
-    else:
-        data = load_parquet()
+    data = load_parquet()
     st.session_state["data"] = data
 
 # Affichage de la page

@@ -3,24 +3,25 @@ Fichier contenant la page "Tableau de bord" de l'application.
 """
 
 import streamlit as st
-import dask.dataframe as dd
+import polars as pl
 import plotly.express as px
 
 from src.app.ui_components import show_navbar
 
 @st.cache_data(show_spinner=False)
 def compute_counts(port_min: int, port_max: int, column_name: str, 
-                   action_filter: bool = False) -> dd.DataFrame:
+                   action_filter: bool = False):
     """
     Calcul et mise en cache des comptes pour une colonne donnée 
     en tenant compte d'un éventuel filtre sur l'action.
     """
     data = st.session_state.data
-    data_filtre = data[(data['portdst'] >= port_min) & (data['portdst'] <= port_max)]
+    data_filtre = data.filter((pl.col("portdst") >= port_min) & (pl.col("portdst") <= port_max))
     if action_filter:
-        data_filtre = data_filtre[data_filtre['action'] == 'PERMIT']
-    counts = data_filtre[column_name].value_counts().reset_index().compute()
-    return counts
+        data_filtre = data_filtre.filter(pl.col("action") == "PERMIT")
+    counts = data_filtre.group_by(column_name).agg(pl.count().alias("count"))
+    
+    return counts.to_pandas()
 
 def show():
     """
