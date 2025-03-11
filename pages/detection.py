@@ -78,36 +78,7 @@ def show():
     with tab2:
         st.subheader("Analyse des connexions et clustering")
 
-        # Calcul des statistiques
-        # nb_total = data.group_by("ipsrc").len().rename({"len": "nb_total"})
-        # nb_deny = data.filter(data["action"] == "DENY").group_by("ipsrc").len().rename({"len": "nb_deny"})
-        # nb_admit = data.filter(data["action"] == "PERMIT").group_by("ipsrc").len().rename({"len": "nb_admit"})
-        # ports_autorises = (
-        #     data.filter(data["action"] == "PERMIT")
-        #     .group_by("ipsrc")
-        #     .agg(pl.col("portdst").n_unique().alias("nb_ports_autorises"))
-        # )
-
-        # # Fusion des statistiques
-        # df_stats = (
-        #     nb_total.join(nb_deny, on="ipsrc", how="left")
-        #     .join(nb_admit, on="ipsrc", how="left")
-        #     .join(ports_autorises, on="ipsrc", how="left")
-        #     .fill_null(0)
-        # )
-
-        # Convertir les colonnes en int
-        df_stats = df_stats.with_columns(
-            [pl.col(c).cast(pl.Int32) for c in ["nb_total", "nb_deny", "nb_admit", "nb_ports_autorises"]]
-        )
-
-        # Convertir les IPs en entiers
-        df_stats = df_stats.with_columns(
-            pl.col("ipsrc").map_elements(ip2int, return_dtype=pl.Int64).alias("ipsrc_int")
-        )
-
-
-        # Affichage du DataFrame
+        # Affichage du DataFrame sans reconversion inutile
         st.dataframe(df_stats, use_container_width=True)
 
         # Clustering avec K-Means
