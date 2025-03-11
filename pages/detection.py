@@ -89,7 +89,7 @@ def show():
 
     with tab1:
         st.subheader("Apprentissage supervisé")
-        st.write("Section en cours de développement.")
+        st.image("docs/Figure_1.png")
 
     with tab2:
         st.subheader("Analyse des connexions et clustering")
