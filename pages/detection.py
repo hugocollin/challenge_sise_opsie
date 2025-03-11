@@ -32,11 +32,11 @@ def show():
     tab1, tab2, tab3, tab4 = st.tabs(["Apprentissage supervisé", "Clustering", "Analyse des connexions", "Détection des anomalies"])
 
     with tab1:
-        st.subheader("🔍 Apprentissage supervisé")
+        st.subheader("Apprentissage supervisé")
         st.write("Section en cours de développement.")
 
     with tab2:
-        st.subheader("📊 Analyse des connexions et clustering")
+        st.subheader("Analyse des connexions et clustering")
 
         # Calcul des statistiques
         nb_total = data.groupby('ipsrc').size().reset_index().rename(columns={0: 'nb_total'})
@@ -80,7 +80,7 @@ def show():
         st.plotly_chart(fig, use_container_width=True)
 
     with tab3:
-        st.subheader("📈 Analyse des connexions")
+        st.subheader("Analyse des connexions")
         # Histogramme des connexions par IP
         fig_hist = px.bar(df_stats, x='ipsrc', y='nb_total', title="Nombre de connexions par IP",
                           labels={'ipsrc': 'Adresse IP', 'nb_total': 'Nombre de connexions'},
@@ -92,13 +92,13 @@ def show():
         # sns.heatmap(df_cluster.corr(), annot=True, cmap="coolwarm", ax=ax)
         # st.pyplot(fig_corr)
 
-    with tab4:
-        st.subheader("🚨 Détection des anomalies avec Isolation Forest")
-        iso_forest = IsolationForest(contamination=0.05, random_state=42)
-        df_stats['Anomalie'] = iso_forest.fit_predict(df_scaled)
-        df_stats['Anomalie'] = df_stats['Anomalie'].map({1: 'Normal', -1: 'Anomalie'})
+    # with tab4:
+    #     st.subheader("Détection des anomalies avec Isolation Forest")
+    #     iso_forest = IsolationForest(contamination=0.05, random_state=42)
+    #     df_stats['Anomalie'] = iso_forest.fit_predict(df_scaled)
+    #     df_stats['Anomalie'] = df_stats['Anomalie'].map({1: 'Normal', -1: 'Anomalie'})
 
-        # Visualisation des anomalies
-        fig_anomalies = px.scatter(df_stats, x='nb_total', y='nb_ports_autorises', color='Anomalie',
-                                   title='Détection des anomalies', hover_data=['ipsrc'])
-        st.plotly_chart(fig_anomalies, use_container_width=True)
+    #     # Visualisation des anomalies
+    #     fig_anomalies = px.scatter(df_stats, x='nb_total', y='nb_ports_autorises', color='Anomalie',
+    #                                title='Détection des anomalies', hover_data=['ipsrc'])
+    #     st.plotly_chart(fig_anomalies, use_container_width=True)
