@@ -29,7 +29,8 @@ page_module = __import__(module_name, fromlist=["show"])
 
 # Chargement des données
 if "data" not in st.session_state:
-    st.session_state["data"] = load_parquet()
+    data = load_parquet().persist()
+    st.session_state["data"] = data
 
 # Affichage de la page
 page_module.show()

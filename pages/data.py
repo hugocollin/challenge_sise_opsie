@@ -22,12 +22,14 @@ def show():
     data = st.session_state["data"]
 
     # Paramètres de pagination
+    if "total_rows" not in st.session_state:
+        st.session_state["total_rows"] = int(data.shape[0].compute())
+    total_rows = st.session_state["total_rows"]
     if "page" not in st.session_state:
-        st.session_state.page = 1
+        st.session_state["page"] = 1
     page_size = 100
-    total_rows = int(data.shape[0].compute())
     total_pages = math.ceil(total_rows / page_size)
-
+    
     # Calcul de l'intervalle à afficher
     start_idx = (st.session_state.page - 1) * page_size
     end_idx = start_idx + page_size
