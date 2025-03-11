@@ -32,9 +32,6 @@ def show():
     # Titre de la page
     st.title(":material/dashboard: Tableau de bord")
 
-    # Récupération des données
-    data = st.session_state.data
-
     # Filtrage par plage de ports (RFC 6056)
     with st.container(border=True):
         port_min, port_max = st.slider(
@@ -42,8 +39,6 @@ def show():
             min_value=1, max_value=65535,
             value=(1, 65535)
         )
-        # On utilise les bornes comme partie de la clé du cache
-        filter_key = f"{port_min}_{port_max}"
 
     cols = st.columns(2)
 
