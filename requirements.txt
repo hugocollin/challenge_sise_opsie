@@ -2,3 +2,4 @@ polars
 plotly
 dotenv
 scikit-learn
+lightgbm

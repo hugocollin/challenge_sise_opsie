@@ -4,9 +4,18 @@ from sklearn.preprocessing import StandardScaler
 import ipaddress
 import plotly.express as px
 import polars as pl
+import pandas as pd
 
 from src.app.ui_components import show_navbar
 
+import numpy as np
+import polars as pl
+import ipaddress
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from lightgbm import LGBMClassifier
+from sklearn.metrics import classification_report
 
 def ip2int(ip):
     """
@@ -69,11 +78,68 @@ def show():
     # Chargement des données
     df_stats = load_data()
 
+    # Récupération des données
+    data = st.session_state["data"].drop_nulls()
+    data = pl.DataFrame(data)
+
     tab1, tab2, tab3 = st.tabs(["Apprentissage supervisé", "Clustering", "Analyse des connexions"])
 
     with tab1:
-        st.subheader("Apprentissage supervisé")
-        st.write("Section en cours de développement.")
+        st.subheader("Classification des adresses IP en fonction de leur comportement")
+
+        # Conversion Polars → Pandas pour utiliser Scikit-learn
+        data1 = data.to_pandas()
+
+        # Supprimer les valeurs manquantes
+        data1 = data1.dropna()
+
+
+        # Conversion des adresses IP en entiers
+        def ip_to_int(ip):
+            try:
+                return int(ipaddress.ip_address(ip))
+            except ValueError:
+                return 0
+
+        data1['ipsrc'] = data1['ipsrc'].apply(ip_to_int)
+        data1['ipdst'] = data1['ipdst'].apply(ip_to_int)
+
+        # Définir la variable cible : si l'action est DENY, on met 1 (suspect)
+        data1['action'] = data1['action'].apply(lambda x: 1 if x == 'DENY' else 0)
+
+        # Encodage des variables catégorielles avec One-Hot Encoding
+        data1['proto'] = data1['proto'].astype('category').cat.codes
+
+        # Conversion de la colonne 'date'
+        data1['date'] = pd.to_datetime(data1['date'])
+
+        # Vérification des valeurs manquantes
+        missing_values = data1.isnull().sum()
+        #print("Valeurs manquantes par colonne :\n", missing_values)
+
+        # Sélection des features (X) et de la cible (y)
+        X = data1.drop(columns=['action', 'date'])  # On enlève 'date' car ce n'est pas une feature utile ici
+        y = data1['action']
+
+        # Séparation en train et test
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # Utiliser LightGBM au lieu de RandomForest
+        model = LGBMClassifier(n_estimators=100, learning_rate=0.1)
+        model.fit(X_train, y_train)
+
+        # 8️⃣ Évaluer le modèle
+        y_pred = model.predict(X_test)
+        #print("Classification Report:")
+        #print(classification_report(y_test, y_pred))
+
+        # Visualisation des IP suspectes les plus actives
+        ip_activity = data1[data1['action'] == 1]['ipsrc'].value_counts().head(20)
+        plt.figure(figsize=(10,6))
+        sns.barplot(x=ip_activity.values, y=ip_activity.index, palette='Reds')
+        plt.xlabel('Nombre d\'activités suspectes')
+        plt.title('Top 20 des adresses IP suspectes les plus actives')
+        plt.show()
 
     with tab2:
         st.subheader("Analyse des connexions et clustering")

@@ -6,3 +6,4 @@ polars
 seaborn
 scikit-learn
 matplotlib
+lightgbm
