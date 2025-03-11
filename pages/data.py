@@ -51,3 +51,11 @@ def show():
     # Informations sur la pagination
     with cols[1]:
         st.write(f"Affichage des lignes {start_idx} à {min(end_idx, total_rows)} sur {total_rows}")
+
+    # data_table = data_filtre.copy()
+    # if ip_filter:
+    #     data_table = data_table[data_table['ip'].str.contains(ip_filter)]
+    # if protocol_filter:
+    #     data_table = data_table[data_table['protocol'] == protocol_filter]
+    # if action_filter:
+    #     data_table = data_table[data_table['action'] == action_filter]
