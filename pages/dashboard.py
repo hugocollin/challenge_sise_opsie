@@ -9,17 +9,23 @@ import plotly.express as px
 from src.app.ui_components import show_navbar
 
 
-@st.cache_data(show_spinner=False)
-def compute_counts_cached(port_min: int, port_max: int, column_name: str, action_filter: bool, data):
-    filter_expr = (pl.col("portdst") >= port_min) & (pl.col("portdst") <= port_max)
+def compute_group_counts(port_min: int, port_max: int, column_name: str, action_filter: bool = False):
+    """
+    Calcule les comptes optimisés pour une colonne donnée en utilisant l'API lazy de Polars.
+    """
+    # Passage en mode lazy pour optimiser le calcul
+    lazy_data = st.session_state.data.lazy()
+    lazy_filtered = lazy_data.filter((pl.col("portdst") >= port_min) & (pl.col("portdst") <= port_max))
     if action_filter:
-        filter_expr &= (pl.col("action") == "PERMIT")
-    counts_df = data.filter(filter_expr).group_by(column_name).agg(pl.count().alias("count"))
-    return counts_df.to_pandas()
-
-def compute_counts(port_min: int, port_max: int, column_name: str, action_filter: bool = False):
-    data = st.session_state.data
-    return compute_counts_cached(port_min, port_max, column_name, action_filter, data)
+        lazy_filtered = lazy_filtered.filter(pl.col("action") == "PERMIT")
+    # Groupement et agrégation
+    lazy_counts = (lazy_filtered
+                   .group_by(column_name)
+                   .agg(pl.count().alias("count"))
+                   .sort("count", descending=True)
+                   )
+    # Exécution de la requête lazy
+    return lazy_counts.collect().to_pandas()
 
 def show():
     """
@@ -44,9 +50,8 @@ def show():
     with cols[0]:
         # Top 5 des IP émettrices
         with st.container(border=True):
-            top_ips = compute_counts(port_min, port_max, 'ipsrc')
-            top_ips.columns = ['ipsrc', 'count']
-            top_ips = top_ips.sort_values(by='count', ascending=False).head(5).reset_index(drop=True)
+            top_ips = compute_group_counts(port_min, port_max, 'ipsrc')
+            top_ips = top_ips.head(5).reset_index(drop=True)
             st.write("**Top 5 des IP émettrices :**")
             for i, row in top_ips.iterrows():
                 st.write(f"**{i+1}.** `{row['ipsrc']}` : {row['count']} connexions")
@@ -63,8 +68,7 @@ def show():
 
         # Répartition des connexions
         with st.container(border=True):
-            action_counts = compute_counts(port_min, port_max, 'action')
-            action_counts.columns = ['action', 'count']
+            action_counts = compute_group_counts(port_min, port_max, 'action')
             fig_action = px.pie(
                 action_counts,
                 names='action',
@@ -79,8 +83,7 @@ def show():
 
         # Répartition des règles
         with st.container(border=True):
-            rule_counts = compute_counts(port_min, port_max, 'regle')
-            rule_counts.columns = ['regle', 'count']
+            rule_counts = compute_group_counts(port_min, port_max, 'regle')
             fig_rule = px.pie(
                 rule_counts,
                 names='regle',
@@ -95,16 +98,14 @@ def show():
         # Top 10 des ports inférieurs à 1024 les plus autorisés
         with st.container(border=True):
             st.write("**Top 10 des ports (< 1024) les plus autorisés :**")
-            top_ports = compute_counts(port_min, port_max, 'portdst', action_filter=True)
-            top_ports.columns = ['portdst', 'count']
-            top_ports = top_ports.sort_values(by='count', ascending=False).head(10).reset_index(drop=True)
+            top_ports = compute_group_counts(port_min, port_max, 'portdst', action_filter=True)
+            top_ports = top_ports.head(10).reset_index(drop=True)
             for i, row in top_ports.iterrows():
                 st.write(f"**{i+1}.** Port `{row['portdst']}` : {row['count']} connexions")
 
         # Répartition des protocoles
         with st.container(border=True):
-            protocol_counts = compute_counts(port_min, port_max, 'proto')
-            protocol_counts.columns = ['proto', 'count']
+            protocol_counts = compute_group_counts(port_min, port_max, 'proto')
             fig_protocol = px.pie(
                 protocol_counts,
                 names='proto',
