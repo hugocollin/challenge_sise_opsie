@@ -15,8 +15,6 @@ def ip2int(ip):
     """
     return int(ipaddress.ip_address(ip))
 
-
-@st.cache_data(show_spinner=False)
 def load_data():
     """
     Charge les données et calcule les statistiques.
@@ -55,7 +53,6 @@ def load_data():
     )
 
     return df_stats
-
 
 def show():
     """
