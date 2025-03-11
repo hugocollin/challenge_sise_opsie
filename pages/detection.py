@@ -5,6 +5,8 @@ import ipaddress
 import plotly.express as px
 import polars as pl
 
+from src.app.ui_components import show_navbar
+
 
 def ip2int(ip):
     """
@@ -47,7 +49,9 @@ def load_data():
     )
 
     # Convertir les IPs en entiers
-    df_stats = df_stats.with_columns(pl.col("ipsrc").map_elements(ip2int).alias("ipsrc_int"))
+    df_stats = df_stats.with_columns(
+        pl.col("ipsrc").map_elements(ip2int, return_dtype=pl.Int64).alias("ipsrc_int")
+    )
 
     return df_stats
 
@@ -56,6 +60,9 @@ def show():
     """
     Affiche la page "Détection d'anomalies".
     """
+    # Barre de navigation
+    show_navbar()
+
     # Titre de la page
     st.title(":material/policy_alert: Détection d'anomalies")
 
@@ -95,7 +102,9 @@ def show():
         )
 
         # Convertir les IPs en entiers
-        df_stats = df_stats.with_columns(pl.col("ipsrc").map_elements(ip2int).alias("ipsrc_int"))
+        df_stats = df_stats.with_columns(
+            pl.col("ipsrc").map_elements(ip2int, return_dtype=pl.Int64).alias("ipsrc_int")
+        )
 
 
         # Affichage du DataFrame
@@ -143,5 +152,3 @@ def show():
             text_auto=True,
         )
         st.plotly_chart(fig_hist, use_container_width=True)
-
-
