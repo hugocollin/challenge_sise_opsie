@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler
 import ipaddress
 import plotly.express as px
 import polars as pl
+import math
 
 from src.app.ui_components import show_navbar
 
@@ -78,8 +79,29 @@ def show():
     with tab2:
         st.subheader("Analyse des connexions et clustering")
 
-        # Affichage du DataFrame sans reconversion inutile
-        st.dataframe(df_stats, use_container_width=True)
+        # Pagination pour l'affichage du tableau
+        total_rows = df_stats.height
+        if "total_rows_detection" not in st.session_state:
+            st.session_state["total_rows_detection"] = total_rows
+        if "page_detection" not in st.session_state:
+            st.session_state["page_detection"] = 1
+        page_size = 100
+        total_pages = math.ceil(total_rows / page_size)
+        start_idx = (st.session_state.page_detection - 1) * page_size
+        df_page = df_stats.slice(start_idx, page_size)
+        st.dataframe(df_page.to_pandas(), use_container_width=True)
+
+        cols = st.columns([3, 7, 10])
+        with cols[0]:
+            st.number_input(
+                "Sélectionnez la page",
+                min_value=1,
+                max_value=total_pages,
+                step=1,
+                key="page_detection"
+            )
+        with cols[1]:
+            st.write(f"Affichage des lignes {start_idx} à {min(start_idx+page_size, total_rows)} sur {total_rows}")
 
         # Clustering avec K-Means
         selected_cols = ["nb_total", "nb_deny", "nb_admit", "nb_ports_autorises", "ipsrc_int"]
