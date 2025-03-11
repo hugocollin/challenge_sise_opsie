@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt update
-RUN apt install -y nmap
+RUN apt install -y nmap openssh-client ftp curl telnet
 
 COPY ./script_command.sh /script_command.sh
 COPY ./script_command_licite.sh /script_command_licite.sh
