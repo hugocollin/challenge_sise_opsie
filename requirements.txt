@@ -1,3 +1,4 @@
 polars
 plotly
 dotenv
+scikit-learn

@@ -2,4 +2,7 @@ streamlit
 plotly
 python-dotenv
 mysql-connector-python
-dask
+polars
+seaborn
+scikit-learn
+matplotlib
