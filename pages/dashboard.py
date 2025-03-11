@@ -59,10 +59,9 @@ def show():
         # Adresses hors du plan d’adressage universitaire
         with st.container(border=True):
             st.write("**Adresses hors du plan d’adressage universitaire :**")
-            # Exemple de code pour afficher ces adresses (à ajuster si besoin)
             # non_uni = compute_counts(port_min, port_max, 'ipsrc')
             # non_uni.columns = ['ipsrc', 'count']
-            # non_uni = non_uni[~non_uni['ipsrc'].str.startswith("193.186.4.124")].sort_values(by='count', ascending=False)
+            # non_uni = non_uni[~non_uni['ipsrc'].str.startswith("172.43.0")].sort_values(by='count', ascending=False)
             # for i, row in non_uni.iterrows():
             #     st.write(f"**-** `{row['ipsrc']}` : {row['count']} connexions")
 
