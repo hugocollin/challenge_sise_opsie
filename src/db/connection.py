@@ -1,10 +1,9 @@
 # import os
 # import mysql.connector
 # from dotenv import load_dotenv
-import streamlit as st
 import polars as pl
 
-# @st.cache_data(show_spinner=False)
+
 def load_parquet():
     """
     Charge le fichier parquet avec Polars.
