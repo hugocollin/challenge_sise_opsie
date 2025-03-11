@@ -28,6 +28,7 @@ services:
         ipv4_address: 172.43.0.12
     volumes:
       - ./mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mariadb/scan_res.sql:/docker-entrypoint-initdb.d/scan_data.sql
     privileged: true
     healthcheck:
       test: mysqladmin ping -h localhost -u root --password=mypass123 
@@ -47,7 +48,7 @@ services:
 
   syslog:
     build:
-      context: ./syslog-ng
+      context: syslog-ng/
       dockerfile: Dockerfile
     container_name: cont_syslog_infra_chall
     hostname: infra_chall_syslog
@@ -61,7 +62,7 @@ services:
 
   iptables:
     build:
-      context: ./iptables
+      context: iptables/
       dockerfile: Dockerfile
     container_name: cont_ipt_infra_chall
     hostname: infra-chall-ipt
@@ -69,6 +70,15 @@ services:
       - syslog
     networks:
       - infra_chall
+    privileged: true
+
+  admin:
+    image: ubuntu:22.04
+    container_name: cont_admin_infra_chall
+    hostname: infra_chall_admin
+    networks: 
+      infra_chall:
+        ipv4_address: 172.43.0.30
     privileged: true
 
 networks:

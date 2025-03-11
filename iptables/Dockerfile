@@ -9,8 +9,8 @@ RUN echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://
 RUN apt update && apt install -y logstash
 COPY ulogd.conf /etc/ulogd.conf
 COPY logstash.conf /logstash.conf
-COPY ./inetd.conf /etc/inetd.conf
-COPY ./iptables_config /iptables_config
+COPY inetd.conf /etc/inetd.conf
+COPY iptables_config /iptables_config
 EXPOSE 22 
 EXPOSE 80
 EXPOSE 21
