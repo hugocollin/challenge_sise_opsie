@@ -62,7 +62,7 @@ def show():
             # Exemple de code pour afficher ces adresses (à ajuster si besoin)
             # non_uni = compute_counts(port_min, port_max, 'ipsrc')
             # non_uni.columns = ['ipsrc', 'count']
-            # non_uni = non_uni[~non_uni['ipsrc'].str.startswith("192.168")].sort_values(by='count', ascending=False)
+            # non_uni = non_uni[~non_uni['ipsrc'].str.startswith("193.186.4.124")].sort_values(by='count', ascending=False)
             # for i, row in non_uni.iterrows():
             #     st.write(f"**-** `{row['ipsrc']}` : {row['count']} connexions")
 
