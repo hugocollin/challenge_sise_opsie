@@ -7,6 +7,9 @@ RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --dearmo
 RUN apt install apt-transport-https
 RUN echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-8.x.list
 RUN apt update && apt install -y logstash
+
+RUN useradd -m -s /bin/bash admin && echo "admin:admin" | chpasswd
+
 COPY ulogd.conf /etc/ulogd.conf
 COPY logstash.conf /logstash.conf
 COPY inetd.conf /etc/inetd.conf
