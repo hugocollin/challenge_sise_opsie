@@ -29,6 +29,7 @@ services:
     volumes:
       - ./mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./mariadb/scan_res.sql:/docker-entrypoint-initdb.d/scan_data.sql
+      - ./mariadb/total.sql:/docker-entrypoint-initdb.d/total.sql
     privileged: true
     healthcheck:
       test: mysqladmin ping -h localhost -u root --password=mypass123 
